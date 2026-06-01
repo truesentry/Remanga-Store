@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}RemangaStore — Манга, Манхва, Маньхуа{% endblock %}
+
+{% block content %}
+
+<section class="hero-section">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+
+            <div class="carousel-item active">
+                <div class="hero-slide hero-slide-1">
+                    <div class="hero-slide-content">
+                        <span class="hero-badge">НОВИНКА</span>
+                        <h1 class="hero-title">Solo Leveling<br><span>Том 1</span></h1>
+                        <p class="hero-subtitle">Новий том легендарної манхви вже у продажу!</p>
+                        <a href="{% url 'products' %}?category=manhwa" class="btn btn-hero">Купити зараз</a>
+                    </div>
+                    <div class="hero-slide-img">
+                        <img src="{% static 'img/banner-solo.jpg' %}" alt="Solo Leveling">
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="hero-slide hero-slide-2">
+                    <div class="hero-slide-content">
+                        <span class="hero-badge">ПОПУЛЯРНЕ</span>
+                        <h1 class="hero-title">Jujutsu Kaisen<br><span>Том 1</span></h1>
+                        <p class="hero-subtitle">Магічна битва триває — не пропусти!</p>
+                        <a href="{% url 'products' %}?category=manga" class="btn btn-hero">Дивитись каталог</a>
+                    </div>
+                    <div class="hero-slide-img">
+                        <img src="{% static 'img/banner-jujutsu.jpg' %}" alt="Jujutsu Kaisen">
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="hero-slide hero-slide-3">
+                    <div class="hero-slide-content">
+                        <span class="hero-badge">ХІТ</span>
+                        <h1 class="hero-title">One Piece<br><span>Том 1</span></h1>
+                        <p class="hero-subtitle">Пригоди Луффі не зупиняються!</p>
+                        <a href="{% url 'products' %}?category=manga" class="btn btn-hero">Придбати</a>
+                    </div>
+                    <div class="hero-slide-img">
+                        <img src="{% static 'img/banner-onepiece.jpg' %}" alt="One Piece">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <button class="carousel-control-prev hero-control" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        <button class="carousel-control-next hero-control" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
+</section>
+
+<section class="home-section py-5">
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">Популярні томи</h2>
+            <a href="{% url 'products' %}" class="section-link">Переглянути всі <i class="bi bi-arrow-right"></i></a>
+        </div>
+
+        <div class="position-relative">
+            <div class="products-scroll-row">
+                {% if popular %}
+                    {% for product in popular %}
+                    <div class="product-scroll-card">
+                        <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                            <div class="pcard">
+                                <div class="pcard-img-wrap">
+                                    {% if product.image %}
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                    {% else %}
+                                        <div class="pcard-placeholder"><i class="bi bi-book fs-1 text-muted"></i></div>
+                                    {% endif %}
+                                    <span class="pcard-badge-cat badge-{{ product.category }}">{{ product.get_category_display }}</span>
+                                    {% if product.is_new %}<span class="pcard-badge-new">НОВИНКА</span>{% endif %}
+                                </div>
+                                <div class="pcard-body">
+                                    <div class="pcard-name">{{ product.name }}</div>
+                                    <div class="pcard-bottom">
+                                        <span class="pcard-price">₴{{ product.price }}</span>
+                                        {% if product.rating %}
+                                        <span class="pcard-rating"><i class="bi bi-star-fill text-warning"></i> {{ product.rating }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    {% for i in "12345" %}
+                    <div class="product-scroll-card">
+                        <div class="pcard pcard-demo">
+                            <div class="pcard-img-wrap pcard-img-demo">
+                                <i class="bi bi-book fs-1 text-muted"></i>
+                            </div>
+                            <div class="pcard-body">
+                                <div class="pcard-name text-muted">Назва манги. Том 1</div>
+                                <div class="pcard-bottom">
+                                    <span class="pcard-price">₴299</span>
+                                    <span class="pcard-rating"><i class="bi bi-star-fill text-warning"></i> 4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="categories-section py-5">
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">Категорії</h2>
+            <a href="{% url 'products' %}" class="section-link">Переглянути всі <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="cat-card cat-manga">
+                    <div class="cat-card-body">
+                        <h3>Манга</h3>
+                        <p>Японські комікси на будь-який смак</p>
+                        <a href="{% url 'products' %}?category=manga" class="btn btn-cat">Перейти</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cat-card cat-manhwa">
+                    <div class="cat-card-body">
+                        <h3>Манхва</h3>
+                        <p>Корейські вебтуни та друковані видання</p>
+                        <a href="{% url 'products' %}?category=manhwa" class="btn btn-cat">Перейти</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cat-card cat-manhua">
+                    <div class="cat-card-body">
+                        <h3>Маньхуа</h3>
+                        <p>Китайські комікси українською мовою</p>
+                        <a href="{% url 'products' %}?category=manhua" class="btn btn-cat">Перейти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if manga_items or manhwa_items %}
+<section class="home-section py-5 bg-light-subtle">
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">Рекомендації для вас</h2>
+            <a href="{% url 'products' %}" class="section-link">Переглянути всі <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="products-scroll-row">
+            {% for product in manga_items %}
+            <div class="product-scroll-card">
+                <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                    <div class="pcard">
+                        <div class="pcard-img-wrap">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="pcard-placeholder"><i class="bi bi-book fs-1 text-muted"></i></div>
+                            {% endif %}
+                            <span class="pcard-badge-cat badge-manga">Манга</span>
+                        </div>
+                        <div class="pcard-body">
+                            <div class="pcard-name">{{ product.name }}</div>
+                            <div class="pcard-bottom">
+                                <span class="pcard-price">₴{{ product.price }}</span>
+                                {% if product.rating %}
+                                <span class="pcard-rating"><i class="bi bi-star-fill text-warning"></i> {{ product.rating }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+            {% for product in manhwa_items %}
+            <div class="product-scroll-card">
+                <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                    <div class="pcard">
+                        <div class="pcard-img-wrap">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="pcard-placeholder"><i class="bi bi-book fs-1 text-muted"></i></div>
+                            {% endif %}
+                            <span class="pcard-badge-cat badge-manhwa">Манхва</span>
+                        </div>
+                        <div class="pcard-body">
+                            <div class="pcard-name">{{ product.name }}</div>
+                            <div class="pcard-bottom">
+                                <span class="pcard-price">₴{{ product.price }}</span>
+                                {% if product.rating %}
+                                <span class="pcard-rating"><i class="bi bi-star-fill text-warning"></i> {{ product.rating }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

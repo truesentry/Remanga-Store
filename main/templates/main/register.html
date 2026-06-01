@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Реєстрація — RemangaStore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="auth-card">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Реєстрація</h2>
+                    <p class="text-muted small">Створіть новий акаунт</p>
+                </div>
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Логін</label>
+                        <input type="text" name="username" class="form-control" placeholder="Введіть логін" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Пароль</label>
+                        <input type="password" name="password" class="form-control" placeholder="Введіть пароль" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">Зареєструватись</button>
+                </form>
+                <p class="text-center mt-3 small text-muted">
+                    Вже є акаунт? <a href="{% url 'login' %}" class="text-primary">Увійти</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Обране — RemangaStore{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <h1 class="catalog-title mb-4"><i class="bi bi-heart-fill text-danger me-2"></i>Обране</h1>
+    {% if products %}
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="pcard-full h-100">
+                <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                    <div class="pcard-full-img">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="pcard-placeholder-lg"><i class="bi bi-book fs-1 text-muted"></i></div>
+                        {% endif %}
+                        <span class="pcard-badge-cat badge-{{ product.category }}">{{ product.get_category_display }}</span>
+                    </div>
+                    <div class="pcard-full-body">
+                        <div class="pcard-name">{{ product.name }}</div>
+                        <div class="pcard-price mt-1">₴{{ product.price }}</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state text-center py-5">
+        <i class="bi bi-heart fs-1 text-muted mb-3 d-block"></i>
+        <h4 class="text-muted">Список обраного порожній</h4>
+        <a href="{% url 'products' %}" class="btn btn-primary mt-3">Перейти до каталогу</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Каталог — RemangaStore{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h1 class="catalog-title mb-4">Каталог</h1>
+
+    <div class="row">
+
+        <!-- SIDEBAR -->
+        <div class="col-lg-3 mb-4">
+            <div class="catalog-sidebar">
+
+                <div class="sidebar-block">
+                    <h6 class="sidebar-block-title">Категорії</h6>
+                    <a href="{% url 'products' %}" class="sidebar-cat-link {% if not request.GET.category %}active{% endif %}">
+                        <i class="bi bi-grid me-2"></i>Всі
+                    </a>
+                    <a href="?category=manga" class="sidebar-cat-link {% if request.GET.category == 'manga' %}active{% endif %}">
+                        <span class="cat-dot dot-manga"></span>Манга
+                    </a>
+                    <a href="?category=manhwa" class="sidebar-cat-link {% if request.GET.category == 'manhwa' %}active{% endif %}">
+                        <span class="cat-dot dot-manhwa"></span>Манхва
+                    </a>
+                    <a href="?category=manhua" class="sidebar-cat-link {% if request.GET.category == 'manhua' %}active{% endif %}">
+                        <span class="cat-dot dot-manhua"></span>Маньхуа
+                    </a>
+                </div>
+
+                <div class="sidebar-block mt-4">
+                    <h6 class="sidebar-block-title">Ціна</h6>
+                    <form method="get" id="price-form">
+                        {% if request.GET.category %}
+                        <input type="hidden" name="category" value="{{ request.GET.category }}">
+                        {% endif %}
+                        {% if request.GET.search %}
+                        <input type="hidden" name="search" value="{{ request.GET.search }}">
+                        {% endif %}
+                        <div class="d-flex gap-2 mb-2">
+                            <input type="number" name="min_price" class="form-control form-control-sm"
+                                   placeholder="Від" value="{{ request.GET.min_price }}">
+                            <input type="number" name="max_price" class="form-control form-control-sm"
+                                   placeholder="До" value="{{ request.GET.max_price }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">Застосувати</button>
+                    </form>
+                </div>
+
+                <a href="{% url 'products' %}" class="btn btn-outline-secondary btn-sm w-100 mt-3">
+                    <i class="bi bi-x-circle me-1"></i>Скинути фільтри
+                </a>
+
+            </div>
+        </div>
+
+        <!-- PRODUCTS GRID -->
+        <div class="col-lg-9">
+
+            {% if products %}
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-sm-6 col-xl-4">
+                    <div class="pcard-full h-100">
+                        <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                            <div class="pcard-full-img">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% else %}
+                                    <div class="pcard-placeholder-lg"><i class="bi bi-book fs-1 text-muted"></i></div>
+                                {% endif %}
+                                <span class="pcard-badge-cat badge-{{ product.category }}">{{ product.get_category_display }}</span>
+                                {% if product.is_new %}<span class="pcard-badge-new">НОВИНКА</span>{% endif %}
+                            </div>
+                            <div class="pcard-full-body">
+                                <div class="pcard-name">{{ product.name }}</div>
+                                {% if product.author %}
+                                <div class="pcard-author text-muted small">{{ product.author }}</div>
+                                {% endif %}
+                                <div class="pcard-bottom mt-2">
+                                    <span class="pcard-price">₴{{ product.price }}</span>
+                                    {% if product.rating %}
+                                    <span class="pcard-rating"><i class="bi bi-star-fill text-warning"></i> {{ product.rating }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                        <div class="pcard-full-actions px-3 pb-3">
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary btn-sm w-100">
+                                Детальніше
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state text-center py-5">
+                <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
+                <h4 class="text-muted">Нічого не знайдено</h4>
+                <p class="text-secondary">Спробуйте змінити параметри пошуку або фільтри</p>
+                <a href="{% url 'products' %}" class="btn btn-primary mt-2">Показати все</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

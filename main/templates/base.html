@@ -1,0 +1,242 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RemangaStore{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<header class="site-header">
+    <div class="header-inner container-fluid px-4">
+
+        <a href="{% url 'home' %}" class="brand-logo text-decoration-none">
+            <span class="brand-book">Remanga</span><span class="brand-shops">Store</span>
+        </a>
+
+        <div class="header-search">
+            <form method="get" action="{% url 'products' %}" class="search-form-wrap" id="search-form">
+                <div class="search-wrapper">
+                    <input type="text"
+                           name="search"
+                           id="search-input"
+                           class="search-input"
+                           placeholder="Пошук манги, манхви, маньхуа..."
+                           value="{{ request.GET.search }}"
+                           autocomplete="off">
+                    <button type="submit" class="search-btn">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <div class="autocomplete-dropdown" id="autocomplete-dropdown"></div>
+                </div>
+            </form>
+        </div>
+
+        <nav class="header-nav ms-auto">
+            <a href="{% url 'products' %}" class="nav-item-link {% if request.resolver_match.url_name == 'products' %}active{% endif %}">
+                <i class="bi bi-grid-fill me-1"></i>Каталог
+            </a>
+            <a href="{% url 'products' %}?category=manhwa" class="nav-item-link">
+                Популярне
+            </a>
+            <a href="{% url 'products' %}?is_new=1" class="nav-item-link">
+                Новинки
+            </a>
+        </nav>
+
+        <div class="header-actions">
+            {% if user.is_authenticated %}
+            <div class="dropdown">
+                <button class="btn action-btn dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle fs-5"></i>
+                    <span class="d-none d-lg-inline ms-1">{{ user.username }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li><a class="dropdown-item" href="{% url 'favorites' %}"><i class="bi bi-heart me-2"></i>Обране</a></li>
+                    <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Профіль</a></li>
+                    <li><a class="dropdown-item" href="{% url 'create' %}"><i class="bi bi-plus-circle me-2"></i>Додати товар</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Вийти</a></li>
+                </ul>
+            </div>
+            {% else %}
+            <div class="dropdown">
+                <button class="btn action-btn dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle fs-5"></i>
+                    <span class="d-none d-lg-inline ms-1">Профіль</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li><a class="dropdown-item" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right me-2"></i>Увійти</a></li>
+                    <li><a class="dropdown-item" href="{% url 'register' %}"><i class="bi bi-person-plus me-2"></i>Реєстрація</a></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</header>
+
+<main class="flex-grow-1">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer class="site-footer bg-dark text-white pt-5 pb-3">
+    <div class="container">
+
+        <div class="footer-features row g-3 pb-4 mb-4 border-bottom border-secondary">
+            <div class="col-6 col-md-3 text-center">
+                <i class="bi bi-truck fs-3 text-primary mb-2 d-block"></i>
+                <div class="fw-semibold small">Безкоштовна доставка</div>
+                <div class="text-secondary" style="font-size:12px;">від 1000 грн</div>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+                <i class="bi bi-box-seam fs-3 text-primary mb-2 d-block"></i>
+                <div class="fw-semibold small">Надійне пакування</div>
+                <div class="text-secondary" style="font-size:12px;">ваших замовлень</div>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+                <i class="bi bi-arrow-counterclockwise fs-3 text-primary mb-2 d-block"></i>
+                <div class="fw-semibold small">Повернення товару</div>
+                <div class="text-secondary" style="font-size:12px;">14 днів</div>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+                <i class="bi bi-headset fs-3 text-primary mb-2 d-block"></i>
+                <div class="fw-semibold small">Підтримка 24/7</div>
+                <div class="text-secondary" style="font-size:12px;">Ми завжди з вами</div>
+            </div>
+        </div>
+
+        <div class="row gy-4 pb-4 border-bottom border-secondary">
+
+            <div class="col-md-4">
+                <a href="{% url 'home' %}" class="text-decoration-none d-block mb-3">
+                    <span class="brand-book fs-4 fw-bold">Remanga</span><span class="brand-shops fs-4 fw-bold">Store</span>
+                </a>
+                <p class="text-secondary small">Офіційний магазин манги, манхви та маньхуа в Україні. Купуйте оригінальні томи з швидкою доставкою.</p>
+            </div>
+
+            <div class="col-6 col-md-2 offset-md-1">
+                <h6 class="text-uppercase fw-bold small mb-3" style="letter-spacing:.08em;">Навігація</h6>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><a href="{% url 'home' %}" class="text-secondary text-decoration-none footer-link">Головна</a></li>
+                    <li class="mb-2"><a href="{% url 'products' %}" class="text-secondary text-decoration-none footer-link">Каталог</a></li>
+                    <li class="mb-2"><a href="{% url 'about' %}" class="text-secondary text-decoration-none footer-link">Про нас</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-2">
+                <h6 class="text-uppercase fw-bold small mb-3" style="letter-spacing:.08em;">Категорії</h6>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><a href="{% url 'products' %}?category=manga" class="text-secondary text-decoration-none footer-link">Манга</a></li>
+                    <li class="mb-2"><a href="{% url 'products' %}?category=manhwa" class="text-secondary text-decoration-none footer-link">Манхва</a></li>
+                    <li class="mb-2"><a href="{% url 'products' %}?category=manhua" class="text-secondary text-decoration-none footer-link">Маньхуа</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="text-uppercase fw-bold small mb-3" style="letter-spacing:.08em;">Ми в соцмережах</h6>
+                <div class="d-flex gap-2">
+                    <a href="#" class="footer-social-btn" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="footer-social-btn" aria-label="Telegram"><i class="bi bi-telegram"></i></a>
+                    <a href="#" class="footer-social-btn" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="footer-social-btn" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 gap-2">
+            <p class="text-secondary small mb-0">© 2025 RemangaStore. Всі права захищені.</p>
+            <p class="text-secondary small mb-0">Найкращий магазин манги в Україні 🇺🇦</p>
+        </div>
+
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+    const input = document.getElementById('search-input');
+    const dropdown = document.getElementById('autocomplete-dropdown');
+    if (!input || !dropdown) return;
+
+    let activeIndex = -1;
+    let debounceTimer;
+
+    input.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const query = this.value.trim();
+        if (query.length === 0) { closeDropdown(); return; }
+        debounceTimer = setTimeout(() => fetchSuggestions(query), 200);
+    });
+
+    input.addEventListener('keydown', function(e) {
+        const items = dropdown.querySelectorAll('.autocomplete-item');
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeIndex = Math.min(activeIndex + 1, items.length - 1);
+            updateActive(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeIndex = Math.max(activeIndex - 1, -1);
+            updateActive(items);
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+            e.preventDefault();
+            items[activeIndex].click();
+        } else if (e.key === 'Escape') {
+            closeDropdown();
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) closeDropdown();
+    });
+
+    function fetchSuggestions(query) {
+        fetch('/search-autocomplete/?q=' + encodeURIComponent(query))
+            .then(r => r.json())
+            .then(data => renderDropdown(data.results, query));
+    }
+
+    function renderDropdown(results, query) {
+        activeIndex = -1;
+        if (results.length === 0) { closeDropdown(); return; }
+        dropdown.innerHTML = results.map(item => {
+            const highlighted = item.name.replace(
+                new RegExp('(' + escapeRegex(query) + ')', 'gi'),
+                '<strong>$1</strong>'
+            );
+            return `<a href="/products/?search=${encodeURIComponent(item.name)}" class="autocomplete-item">
+                <div>
+                    <div class="item-name">${highlighted}</div>
+                    <div class="item-meta">${item.category}</div>
+                </div>
+                <div class="item-price">₴${item.price}</div>
+            </a>`;
+        }).join('');
+        dropdown.style.display = 'block';
+    }
+
+    function updateActive(items) {
+        items.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+    }
+
+    function closeDropdown() {
+        dropdown.style.display = 'none';
+        dropdown.innerHTML = '';
+        activeIndex = -1;
+    }
+
+    function escapeRegex(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+})();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
